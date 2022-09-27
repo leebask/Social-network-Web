@@ -1,0 +1,40 @@
+ .modalOverlay{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: .2;
+    z-index: 0;
+}
+.modalWrapper{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.modalContent{
+    position: relative;
+    margin: auto;
+    min-width: 500px;
+    max-height: 500px;
+    margin-top: 100px;
+    background-color: #60a1f5;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    z-index: 999;
+}
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  /* From uiverse.io */
+
+  
