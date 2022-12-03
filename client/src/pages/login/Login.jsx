@@ -21,7 +21,7 @@ export default function Login() {
   let isFetching = useSelector(fetchSelector);
   const handleClick = async (e) => {
     e.preventDefault();
-    await dispatch(
+    dispatch(
       signIn({
         email: email.current.value,
         password: password.current.value,
