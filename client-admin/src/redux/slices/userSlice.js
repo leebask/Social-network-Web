@@ -23,6 +23,7 @@ export const signIn = createAsyncThunk(
     return response.user
   }
 );
+
 export const getFriends = createAsyncThunk(
   'user/getFriends',
   async (params, thunkAPI) => {
