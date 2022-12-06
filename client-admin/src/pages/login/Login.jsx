@@ -17,7 +17,7 @@ export default function Login() {
   let isFetching = useSelector(fetchSelector);
   let isError = useSelector(errorSelector);
   const handleClick = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     await dispatch(
       signIn({
         email: email.current.value,

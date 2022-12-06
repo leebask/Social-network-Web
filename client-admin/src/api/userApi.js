@@ -3,7 +3,7 @@ import api from '../api/API'
 const userApi = {
   signIn: async (payload) => {
     // Cái đường dẫn API này tuỳ thuộc vào BE của bạn cho cái nào thì dùng cái đó
-    const url = '/auth/admin/login';
+    const url = '/api/auth/login';
     const response =  axiosClient.post(url, payload);
     return response;
   },
