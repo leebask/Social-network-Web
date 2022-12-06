@@ -13,11 +13,13 @@ import { format } from 'timeago.js';
 import { notify } from '../../utility/toast';
 import { Link } from 'react-router-dom';
 import { forwardRef } from 'react';
+import { Avatar } from "@mui/material";
 
-const Post = forwardRef(({ post }, ref) => {
+const Post = forwardRef(({ post, posts, setPosts }, ref) => {
+  const [data , setData] = useState({...post})
   const user = useSelector(userSelector)
   const friends = useSelector(friendSelector)
-  const [like, setLike] = useState(post.numLike || 0)
+  const [like, setLike] = useState(data?.numLike || 0)
   const [comments, setComments] = useState([])
   const [isComment, setIsComment] = useState(false)
   const [option, setOption] = useState(false)
@@ -32,7 +34,7 @@ const Post = forwardRef(({ post }, ref) => {
   const [length, setLength] = useState(0)
   const [editText, setEditText] = useState(post?.description)
 
-
+  useEffect(() => {setData({...post}); setEditText(post?.description)}, [post])
 
 
   useEffect(() => {
@@ -50,22 +52,22 @@ const Post = forwardRef(({ post }, ref) => {
     };
     if (isComment)
       getComments();
-  }, [currentPost, page,]);
+  }, [currentPost, page]);
 
   useEffect(() => {
     const fetchLike = async () => {
-      let res = await postApi.getLikePost(post.id);
+      let res = await postApi.getLikePost(data?.id);
       let usersLikeId = res.data.map(f => f.UserId)
       let check = usersLikeId.includes(user?.id)
       setIsLiked(check)
     }
     fetchLike()
-  }, [user?.id, post?.id])
+  }, [user?.id, data?.id])
 
 
   const likeHandler = async () => {
     try {
-      await postApi.likePost(post.id)
+      await postApi.likePost(data?.id)
     } catch (error) {
 
     }
@@ -76,13 +78,14 @@ const Post = forwardRef(({ post }, ref) => {
 
   const handleComment = () => {
     setIsComment(b => !b)
-    setCurrentPost(post.id)
+    setCurrentPost(data?.id)
   }
   const handleDeletePost = async () => {
     try {
-      let res = await postApi.deletePost(post.id);
-      if (res?.status === 204) {
-        setDeleted(true)
+      let res = await postApi.deletePost(data?.id);
+      if (res?.status === "SUCCESS") {
+        const newPosts = posts.filter(item => item.id !== data?.id)
+        setPosts(newPosts)
       }
       notify('Bài viết đã xoá thành công')
     } catch (err) {
@@ -93,9 +96,9 @@ const Post = forwardRef(({ post }, ref) => {
   const handleUnfollow = async () => {
     try {
       if (followed) {
-        await userApi.unfollow(post.userId)
+        await userApi.unfollow(data?.userId)
       } else {
-        await userApi.follow(post.userId)
+        await userApi.follow(data?.userId)
       }
       setFollowed(!followed);
     } catch (err) {
@@ -114,7 +117,7 @@ const Post = forwardRef(({ post }, ref) => {
     try {
       const newCommentObj = await postApi.createComment({
         text: newComment,
-        postId: post.id
+        postId: data?.id
       })
       setComments(c => [newCommentObj, ...c])
     } catch (error) {
@@ -124,7 +127,7 @@ const Post = forwardRef(({ post }, ref) => {
   }
   const handleReportPost = async () => {
     try {
-      const msg = await postApi.reportPost(post.id)
+      const msg = await postApi.reportPost(data?.id)
       notify(msg)
     } catch (error) {
 
@@ -149,9 +152,9 @@ const Post = forwardRef(({ post }, ref) => {
 
   useEffect(() => {
     let friendsId = friends.map(f => f.followedId)
-    let check = friendsId.includes(post?.userId)
+    let check = friendsId.includes(data?.userId)
     setFollowed(check)
-  }, [post?.userId])
+  }, [data?.userId])
   // const PostDeleted =
   //   <div className="post" ref={ref}>
   //     Bài viết đã xoá
@@ -164,23 +167,23 @@ const Post = forwardRef(({ post }, ref) => {
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <Link to={`/profile/${post.user.username}`} className="postTopLeft">
+            <Link to={`/profile/${data?.user?.username}`} className="postTopLeft">
 
-           
-            <img
+            {data?.user?.profilePicture !== "" ? <img
               className="postProfileImg"
-              src={post.user.profilePicture}
+              src={data?.user?.profilePicture}
               alt=""
-            />
+            /> :   <Avatar className='postProfileImg' src="/broken-image.jpg"></Avatar>}
+            
             <span className="postUsername">
-              {post.user.fullName}
+              {data?.user?.fullName}
             </span>
             </Link>
-            <span className="postDate">{format(post.createdAt)}</span>
+            <span className="postDate">{format(data?.createdAt)}</span>
           </div>
           <div className="postTopRight">
             {
-              post?.userId !== user.id ?
+              data?.userId !== user.id ?
                 <div className="optionButton">
                   <div className="reportButton" onClick={handleReportPost}>
                     <Tooltip title="Báo cáo bài viết">
@@ -199,7 +202,7 @@ const Post = forwardRef(({ post }, ref) => {
                       <Close fontSize='small' />
                     </Tooltip>
                   </div>
-                  <div className="editButton" onClick={() => { setIsShow(true); setPostObj(post) }} >
+                  <div className="editButton" onClick={() => { setIsShow(true); setPostObj(data) }} >
                     <Tooltip title="Sửa bài viết">
 
                       <Edit fontSize='small' />
@@ -214,7 +217,7 @@ const Post = forwardRef(({ post }, ref) => {
         </div>
         <div className="postCenter">
           <span className="postText">{editText}</span>
-          <img className="postImg" src={post.img} alt="" />
+          <img className="postImg" src={data?.img} alt="" />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
@@ -228,7 +231,7 @@ const Post = forwardRef(({ post }, ref) => {
             <span className="postLikeCounter">{like} people like it</span>
           </div>
           <div className="postBottomRight">
-            <span onClick={handleComment} className="postCommentText">{post.numComment || 0} comments</span>
+            <span onClick={handleComment} className="postCommentText">{data?.numComment || 0} comments</span>
           </div>
         </div>
 

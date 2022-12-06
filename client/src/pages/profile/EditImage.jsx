@@ -20,7 +20,7 @@ export const EditImage = ({
             setFile(e.target.files[0]);
             uploadData.append('file', e.target.files[0], 'file');
             let res = await commonApi.cloudinaryUpload(uploadData);
-            setUrlFile(res.secure_url);
+            setUrlFile(res.data.secure_url);
         } catch (error) {
             console.log(error);
         }

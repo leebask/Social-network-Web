@@ -6,6 +6,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { ToastContainer } from '../../utility/toast';
 import { Button } from '@material-ui/core';
 import { useState } from 'react';
+import { Avatar } from '@mui/material';
 export default function Topbar() {
   const user = useSelector(userSelector);
   const [textSearch, setTextSearch] = useState('')
@@ -67,11 +68,12 @@ export default function Topbar() {
           </div>
         </div>
         <Link to={`/profile/${user.username}`}>
-          <img
+          
+          <Avatar
             src={
-              user.profilePicture
+              user.profilePicture !== ""
                 ? user.profilePicture
-                : PF + 'person/noAvatar.png'
+                : '/broken-image.jpg'
             }
             alt=''
             className='topbarImg'

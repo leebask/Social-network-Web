@@ -12,8 +12,9 @@ export const ProfileModal = ({
 }) => {
   const [fullName, setFullName] = useState(user.fullName)
   const [description, setDescription] = useState(user.description)
-  const [city, setCity] = useState(user.city)
-  const [country, setCountry] = useState(user.country)
+  const [address, setAddress] = useState(user.address)
+  // const [city, setCity] = useState(user.city)
+  // const [country, setCountry] = useState(user.country)
   const [oldPass, setOldPass] = useState('')
   const [newPass, setNewPass] = useState('')
   // const [editText,setEditText] = useState(postObj.description)
@@ -29,8 +30,9 @@ export const ProfileModal = ({
           }} />
           <TextField id="outlined-basic" label="Họ tên" variant="standard" value={fullName} onChange={(e) => setFullName(e.target.value)} />
           <TextField id="outlined-basic" label="Giới thiệu bản thân" variant="standard" value={description} onChange={(e) => setDescription(e.target.value)} />
-          <TextField id="outlined-basic" label="Tỉnh, Thành Phố" variant="standard" value={city} onChange={(e) => setCity(e.target.value)} />
-          <TextField id="outlined-basic" label="Quốc gia" variant="standard" value={country} onChange={(e) => setCountry(e.target.value)} />
+          <TextField id="outlined-basic" label="Địa chỉ" variant="standard" value={address} onChange={(e) => setAddress(e.target.value)} />
+          {/* <TextField id="outlined-basic" label="Tỉnh, Thành Phố" variant="standard" value={city} onChange={(e) => setCity(e.target.value)} />
+          <TextField id="outlined-basic" label="Quốc gia" variant="standard" value={country} onChange={(e) => setCountry(e.target.value)} /> */}
           {/* <TextField
             id="outlined-password-input"
             label="Mật khẩu cũ"
@@ -46,7 +48,7 @@ export const ProfileModal = ({
             value={newPass} onChange={(e) => setNewPass(e.target.value)}
           /> */}
           <button className="editModal" onClick={(e) => { e.preventDefault(); editUser(
-            fullName, description, city,country,
+            fullName, description, address
           )  }}> Lưu thông tin
           </button>
         </Stack>

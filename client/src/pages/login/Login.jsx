@@ -14,7 +14,7 @@ import { notify, ToastContainer } from '../../utility/toast';
 import { Link } from 'react-router-dom';
 
 export default function Login() {
-  const email = useRef();
+  const username = useRef();
   const password = useRef();
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ export default function Login() {
     e.preventDefault();
     dispatch(
       signIn({
-        email: email.current.value,
+        username: username.current.value,
         password: password.current.value,
       })
     );
@@ -47,10 +47,10 @@ export default function Login() {
           <form className="loginBox" onSubmit={handleClick}>
             <input
               placeholder="Email"
-              // type="email"
+              // type="username"
               required
               className="loginInput"
-              ref={email}
+              ref={username}
             />
             <input
               placeholder="Password"

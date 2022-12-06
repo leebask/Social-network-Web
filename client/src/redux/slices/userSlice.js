@@ -9,15 +9,19 @@ import {
 export const signIn = createAsyncThunk(
   "user/signIn",
   async (params, thunkAPI) => {
-    console.log(params);
-    const response = await userApi.signIn(params);
-    // Save access token to storage
-    const { token } = response;
-    // const accessToken = `${token_type} ${access_token}`;
-    localStorage.setItem("token", token);
-    const expiredAt = moment().add(3, "days");
-    localStorage.setItem("expired_at", expiredAt); // expired_at is a timestamp
-    return response.user;
+    try {
+      const { data } = await userApi.signIn(params);
+      // Save access token to storage
+      // const accessToken = `${token_type} ${access_token}`;
+      localStorage.setItem("token", data.access_token);
+      const expiredAt = moment().add(3, "days");
+      localStorage.setItem("expired_at", expiredAt); // expired_at is a timestamp
+      console.log(params);
+      const res = await userApi.getUser(params.username);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 export const signInGoogle = createAsyncThunk(

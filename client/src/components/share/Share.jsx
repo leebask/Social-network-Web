@@ -11,19 +11,21 @@ import postApi from '../../api/postApi';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../redux/slices/userSlice';
 import { useRef, useState } from 'react';
-export default function Share() {
+import { Avatar } from '@mui/material';
+export default function Share({getData}) {
   const user = useSelector(userSelector);
-  const desc = useRef();
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [urlFile, setUrlFile] = useState('');
   const submitHandler = async (e) => {
     e.preventDefault();
     const newPost = {
-      description: desc.current.value,
+      description,
       img: urlFile,
     };
     try {
-      const res = await postApi.createPost(newPost);
+      await postApi.createPost(newPost);
+     
       window.location.reload();
     } catch (err) {}
   };
@@ -33,7 +35,7 @@ export default function Share() {
       const uploadData = new FormData();
       uploadData.append('file', e.target.files[0], 'file');
       const res = await commonApi.cloudinaryUpload(uploadData);
-      setUrlFile(res.secure_url);
+      setUrlFile(res.data.secure_url);
     } catch (error) {
       console.log(error);
     }
@@ -42,11 +44,12 @@ export default function Share() {
     <div className='share'>
       <div className='shareWrapper'>
         <div className='shareTop'>
-          <img className='shareProfileImg' src={user.profilePicture} alt='' />
+          {user.profilePicture !== "" ? <img className='shareProfileImg' src={user.profilePicture} alt='' /> :   <Avatar className='shareProfileImg' src='/broken-image.jpg'></Avatar>}
           <input
             placeholder={"What's in your mind " + user.fullName + '?'}
             className='shareInput'
-            ref={desc}
+           value={description}
+           onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <hr className='shareHr' />

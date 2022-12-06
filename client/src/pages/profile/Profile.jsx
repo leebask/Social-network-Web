@@ -45,14 +45,11 @@ export default function Profile() {
 
   const handleUploadProfilePicture = async () => {
     try {
-      
-      
-      console.log('urlFile', urlFile);
       let obj = {};
       if (isCover && urlFile !== '') obj.coverPicture = urlFile;
       else if (urlFile !== '') obj.profilePicture = urlFile
       let res = await userApi.updateUser(obj)
-      console.log('res.data', res.data);
+
       dispatch(userSlice.actions.updateUser(obj))
       setUser(res.data);
       notify(res.message);
@@ -76,9 +73,9 @@ export default function Profile() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const editUser = async (fullName, description, city, country) => {
+  const editUser = async (fullName, description, address) => {
     try {
-      let obj = { fullName, description, city, country };
+      let obj = { fullName, description, address };
       const res = await userApi.updateUser(obj)
       console.log('res.data', res.data);
       dispatch(userSlice.actions.updateUser(res.data))
