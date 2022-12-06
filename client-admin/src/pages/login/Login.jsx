@@ -10,7 +10,7 @@ import {
 } from '../../redux/slices/userSlice';
 import  { notify, ToastContainer } from '../../utility/toast';
 export default function Login() {
-  const email = useRef();
+  const username = useRef();
   const password = useRef();
   const dispatch = useDispatch();
 
@@ -20,7 +20,7 @@ export default function Login() {
     e.preventDefault(); 
     await dispatch(
       signIn({
-        email: email.current.value,
+        username: username.current.value,
         password: password.current.value,
       })
     );
@@ -41,11 +41,11 @@ export default function Login() {
         <div className="loginRight">
           <form className="loginBox" onSubmit={handleClick}>
             <input
-              placeholder="Email"
-              // type="email"
+              placeholder="username"
+              // type="username"
               required
               className="loginInput"
-              ref={email}
+              ref={username}
             />
             <input
               placeholder="Password"

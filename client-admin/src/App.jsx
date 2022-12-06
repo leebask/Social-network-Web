@@ -18,7 +18,7 @@ function App() {
   // let user =null;
   const user = useSelector(userSlice.userSelector);
   const fetch = useSelector(userSlice.fetchSelector);
- 
+ console.log(user,'user app.js');
   // console.log('fetch', fetch);
   // const user = {
   //   id: 1,

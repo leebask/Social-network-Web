@@ -45,14 +45,16 @@ export default function Post() {
         const fetchPosts = async () => {
             try {
                 const res = await postApi.getPostAdmin({
+                    // page:page,
+                    // sort: 'LIKE',
                     page,
                     limit,
                     sort: orderBy,
                     direction: order
                 });
                 console.log('postApi', res);
-                setPosts(res.data);
-                setLength(res.length);
+                setPosts(res.data.items);
+                setLength(res.data.totalItem);
             } catch (err) {
             }
         }
@@ -237,7 +239,7 @@ export default function Post() {
                                             >
                                                 {post.id}
                                             </TableCell>
-                                            <TableCell>{post?.user?.fullName}</TableCell>
+                                            <TableCell>{post?.fullName}</TableCell>
                                             <TableCell align="right">{post.numLike}</TableCell>
                                             <TableCell align="right">{post.numComment}</TableCell>
                                             <TableCell align="right">{post.numReport}</TableCell>

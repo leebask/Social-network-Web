@@ -13,14 +13,16 @@ export const signIn = createAsyncThunk(
     const response = await userApi.signIn(params);
     
     // Save access token to storage
-    console.log(response);
-    const { token} = response;
+    console.log(response,'response');
+    const  token= response.data.access_token;
+    console.log(token,'token');
+
     // const accessToken = `${token_type} ${access_token}`;
     localStorage.setItem('token', token);
     const expiredAt = moment().add(3,'days');
     console.log(expiredAt.toISOString());
     localStorage.setItem('expired_at', expiredAt); // expired_at is a timestamp
-    return response.user
+    return response.data.user
   }
 );
 

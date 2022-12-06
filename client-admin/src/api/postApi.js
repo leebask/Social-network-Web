@@ -23,13 +23,16 @@ const postApi = {
   getPostAdmin: async (payload) => {
     console.log(payload);
     const url = api.GET_POST_ADMIN;
-    const response = await axiosClient.get(url, {params:payload});
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+    const response = await axiosClient.get(url,{headers}, {params:payload});
     return response;
   },
   getDashboardAdmin: async (payload) => {
-    console.log(payload);
+    console.log(payload,'payload admin dashboard');
     const url = api.GET_DASHBOARD_ADMIN;
-    const response = await axiosClient.get(url);
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+    const response = await axiosClient.get(url,{headers});
+    console.log(response,'response admin dashboard')
     return response.data;
   },
   blockPost: async (payload) => {

@@ -1,4 +1,4 @@
-import {Avatar, Button, Grid, Stack, TextField} from '@mui/material';
+import { Avatar, Button, Grid, Stack, TextField } from '@mui/material';
 import Layout from '../../components/Layout';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -15,8 +15,8 @@ import BlockIcon from '@mui/icons-material/Block';
 import InfoIcon from '@mui/icons-material/Info';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import {visuallyHidden} from '@mui/utils';
-import {useEffect, useState} from "react";
+import { visuallyHidden } from '@mui/utils';
+import { useEffect, useState } from "react";
 import postApi from "../../api/postApi";
 import GENERAL_CONSTANTS from "../../GeneralConstants";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -24,12 +24,12 @@ import IconButton from "@mui/material/IconButton";
 import DialogContent from "@mui/material/DialogContent";
 import Typography from "@mui/material/Typography";
 import DialogActions from "@mui/material/DialogActions";
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import userApi from "../../api/userApi";
 import generalConstants from "../../GeneralConstants";
 import SearchIcon from '@mui/icons-material/Search';
-import  { notify } from '../../utility/toast';
+import { notify } from '../../utility/toast';
 
 export default function User() {
 
@@ -56,8 +56,8 @@ export default function User() {
                     direction: order
                 });
                 console.log('postApi', res);
-                setUsers(res.data);
-                setLength(res.length);
+                setUsers(res.data.items);
+                setLength(res.data.totalItem);
             } catch (err) {
             }
         }
@@ -82,7 +82,7 @@ export default function User() {
     };
     const handleBlock = async (userId) => {
         try {
-            let res= await userApi.blockUser({userId});
+            let res = await userApi.blockUser({ userId });
             notify(res.message);
         } catch (error) {
             console.log(error)
@@ -92,7 +92,7 @@ export default function User() {
         setUser(user)
         setOpen(true)
     }
-    
+
     const headCells = [
         {
             id: GENERAL_CONSTANTS.SORT.USERID,
@@ -137,7 +137,7 @@ export default function User() {
     ];
 
     function EnhancedTableHead(props) {
-        const {order, orderBy, rowCount, onRequestSort} =
+        const { order, orderBy, rowCount, onRequestSort } =
             props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
@@ -186,8 +186,8 @@ export default function User() {
                     textSearch
                 });
                 console.log('postApi', res);
-                setUsers(res.data);
-                setLength(res.length);
+                setUsers(res.data.items);
+                setLength(res.data.totalItem);
             } catch (err) {
             }
         }
@@ -195,8 +195,8 @@ export default function User() {
     }
 
 
-// * dialog
-    const BootstrapDialog = styled(Dialog)(({theme}) => ({
+    // * dialog
+    const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
             padding: theme.spacing(2),
         },
@@ -205,10 +205,10 @@ export default function User() {
         },
     }));
     const BootstrapDialogTitle = (props) => {
-        const {children, onClose, ...other} = props;
+        const { children, onClose, ...other } = props;
 
         return (
-            <DialogTitle sx={{m: 0, p: 2}} {...other}>
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
                 {children}
                 {onClose ? (
                     <IconButton
@@ -221,7 +221,7 @@ export default function User() {
                             color: (theme) => theme.palette.grey[500],
                         }}
                     >
-                        <CloseIcon/>
+                        <CloseIcon />
                     </IconButton>
                 ) : null}
             </DialogTitle>
@@ -236,25 +236,27 @@ export default function User() {
 
 
     return <Layout>
-        <Box sx={{width: '100%'}}>
-            <Paper sx={{width: '100%', mb: 2}}>
-                <TextField
-                    id="standard-search"
-                    label="tìm ID, họ tên, tên người dùng"
-                    type="search"
-                    variant="standard"
-                    value={textSearch}
-                    onChange={(e) => setTextSearch(e.target.value)}
-                />
-                < Button variant="contained"
-                         startIcon={<SearchIcon/>} onClick={() =>
-                    handleSubmit()
-                }>
-                    Tìm kiếm
-                </Button>
+        <Box sx={{ width: '100%' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <Stack flexDirection={'row'} marginBottom={8} justifyContent={'flex-end'} gap={2}>
+                    <TextField
+                        id="standard-search"
+                        label="Tìm ID, họ tên, tên người dùng"
+                        type="search"
+                        variant="standard"
+                        value={textSearch}
+                        onChange={(e) => setTextSearch(e.target.value)}
+                    />
+                    < Button variant="contained"
+                        startIcon={<SearchIcon />} onClick={() =>
+                            handleSubmit()
+                        }>
+                        Tìm kiếm
+                    </Button>
+                </Stack>
                 <TableContainer>
                     <Table
-                        sx={{minWidth: 750}}
+                        sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                     >
                         <EnhancedTableHead
@@ -267,7 +269,7 @@ export default function User() {
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
                             {users
-                                .map((user, index) => {
+                                ?.map((user, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -285,7 +287,7 @@ export default function User() {
                                             </TableCell>
                                             <TableCell>{user.fullName}</TableCell>
                                             <TableCell align="right">{user.numPost}</TableCell>
-                                            <TableCell align="right">{user.numReport}</TableCell>
+                                            <TableCell align="right">{user.numIsReported}</TableCell>
                                             <TableCell align="right">{user.numFollowing}</TableCell>
                                             <TableCell align="right">{user.numFollowed}</TableCell>
                                             <TableCell
@@ -296,19 +298,19 @@ export default function User() {
                                                 <Stack direction="row" spacing={2}>
                                                     {(user.isBlock == false) ?
                                                         < Button color='error' variant="contained"
-                                                                 startIcon={<CloseIcon/>} onClick={() =>
-                                                            handleBlock(user.id)
-                                                        }>
+                                                            startIcon={<CloseIcon />} onClick={() =>
+                                                                handleBlock(user.id)
+                                                            }>
                                                             Chặn
                                                         </Button> :
                                                         < Button color='success' variant="contained"
-                                                                 startIcon={<CheckIcon/>} onClick={() =>
-                                                            handleBlock(user.id)
-                                                        }>
+                                                            startIcon={<CheckIcon />} onClick={() =>
+                                                                handleBlock(user.id)
+                                                            }>
                                                             Bỏ chặn
                                                         </Button>
                                                     }
-                                                    <Button variant="contained" endIcon={<InfoIcon/>} onClick={() =>
+                                                    <Button variant="contained" endIcon={<InfoIcon />} onClick={() =>
                                                         handleInfo(user)
                                                     }>
                                                         Xem chi tiết
@@ -325,7 +327,7 @@ export default function User() {
                                         height: (dense ? 33 : 53) * emptyRows,
                                     }}
                                 >
-                                    <TableCell colSpan={6}/>
+                                    <TableCell colSpan={6} />
                                 </TableRow>
                             )}
                         </TableBody>
@@ -349,11 +351,11 @@ export default function User() {
                     open={open}
                 >
                     <BootstrapDialogTitle id="customized-dialog-title"
-                                          onClose={handleClose}>
+                        onClose={handleClose}>
                         <Stack direction="row" spacing={4}>
 
                             <Avatar alt="Remy Sharp"
-                                    src={user.profilePicture && 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH9uDbCmpIMnQl-CNLn3Am5G20bZDqbTBbveil6lc&s'}/>
+                                src={user.profilePicture && 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH9uDbCmpIMnQl-CNLn3Am5G20bZDqbTBbveil6lc&s'} />
 
                             <Typography gutterBottom>
                                 {user?.fullName}
@@ -362,7 +364,7 @@ export default function User() {
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
 
-                        <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 3}}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6}>
                                 Email
                             </Grid>
@@ -379,7 +381,7 @@ export default function User() {
                                 City
                             </Grid>
                             <Grid item xs={6}>
-                                {user?.city}
+                                {user?.address}
                             </Grid>
 
                         </Grid>

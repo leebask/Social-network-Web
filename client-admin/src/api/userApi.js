@@ -1,10 +1,13 @@
 import axiosClient from './axiosClient';
 import api from '../api/API'
+import queryString from "query-string";
 const userApi = {
   signIn: async (payload) => {
     // Cái đường dẫn API này tuỳ thuộc vào BE của bạn cho cái nào thì dùng cái đó
-    const url = '/api/auth/login';
-    const response =  axiosClient.post(url, payload);
+    const url = '/auth/login';
+    const response = axiosClient.post(
+      url + "?" + queryString.stringify(payload)
+    );
     return response;
   },
   getFriends: async (payload) => {
@@ -13,15 +16,16 @@ const userApi = {
     const response =  axiosClient.get(url);
     return response;
   },
-
-  getUser:  async (payload) => {
-    const url = api.GET_USER+payload;
-    const response = await  axiosClient.get(url);
+  getUser: async (payload) => {
+    const url = api.GET_USER + payload;
+    const response = await axiosClient.get(url);
     return response.data;
   },
+
   getUserAdmin: async (payload) => {
     const url =api.GET_USER_ADMIN;
-    const response =await axiosClient.get(url, {params:payload});
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+    const response =await axiosClient.get(url,{headers}, {params:payload});
     return response;
   },
   blockUser: async (payload) => {
