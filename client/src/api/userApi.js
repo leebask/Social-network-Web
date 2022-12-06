@@ -1,24 +1,27 @@
-import axiosClient from './axiosClient';
-import api from '../api/API';
+import axiosClient from "./axiosClient";
+import api from "../api/API";
+import queryString from "query-string";
 const userApi = {
   signIn: async (payload) => {
-    const url = '/auth/login';
-    const response = axiosClient.post(url, payload);
+    const url = "/auth/login";
+    const response = axiosClient.post(
+      url + "?" + queryString.stringify(payload)
+    );
     return response;
   },
   register: async (payload) => {
-    const url = '/auth/register';
-    const response =await axiosClient.post(url, payload);
-    console.log('response', response);
+    const url = "/auth/register";
+    const response = await axiosClient.post(url, payload);
+    console.log("response", response);
     return response;
   },
   forgotPassword: async (payload) => {
-    const url = '/auth/forgot-password';
-    const response =await axiosClient.put(url, payload);
+    const url = "/auth/forgot-password";
+    const response = await axiosClient.put(url, payload);
     return response;
   },
   signInGoogle: async (payload) => {
-    const url = '/auth/login/success';
+    const url = "/auth/login/success";
     const response = axiosClient.get(url, { withCredentials: true });
     return response;
   },
@@ -33,12 +36,11 @@ const userApi = {
       const response = await axiosClient.put(url);
       return response;
     } catch (error) {
-      console.log('error.message',error.message);
-      return error.message
+      console.log("error.message", error.message);
+      return error.message;
     }
   },
   updateUser: async (payload) => {
-    console.log(payload);
     const url = api.GET_USER;
     const response = await axiosClient.put(url, payload);
     return response;
@@ -60,18 +62,15 @@ const userApi = {
     return response;
   },
   getUserById: async (payload) => {
-    const url = api.GET_USER + payload + '/id';
+    const url = api.GET_USER + payload + "/id";
     const response = await axiosClient.get(url);
     return response.data;
   },
   changePassword: async (payload) => {
     const url = api.CHANGE_PASSWORD;
-    const response = await axiosClient.put(url,payload);
+    const response = await axiosClient.put(url, payload);
     return response.message;
   },
 };
 
 export default userApi;
-
-
-

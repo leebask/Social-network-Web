@@ -1,30 +1,28 @@
-const baseURL = process.env.REACT_APP_API_URL;
+export const baseURL = process.env.REACT_APP_API_URL;
 const api = {
-  GET_POST_TIMELINE: baseURL + '/posts/timeline/',
-  GET_POST_PROFILE: baseURL + '/posts/profile/',
-  CREATE_POST: baseURL + '/posts/',
-  QUERY_POSTS: baseURL + '/posts/query/',
-  
-  CREATE_COMMENT: baseURL + '/comments/',
-  DELETE_COMMENT: baseURL + '/comments/',
-  EDIT_COMMENT: baseURL + '/comments/',
-  GET_COMMENTS: baseURL + '/comments/posts/',
+  GET_POST_TIMELINE: baseURL + "/posts/timeline/",
+  GET_POST_PROFILE: baseURL + "/posts/profile/",
+  CREATE_POST: baseURL + "/posts/",
+  QUERY_POSTS: baseURL + "/posts/query/",
 
-  GET_FRIENDS: baseURL + '/users/friends/',
-  GET_USER: baseURL + '/users/',
-  CHANGE_PASSWORD: baseURL + '/users/change-password/',
-  QUERY_USERS: baseURL + '/users/query/',
-  GET_ME: baseURL + '/users/me',
+  CREATE_COMMENT: baseURL + "/comments/",
+  DELETE_COMMENT: baseURL + "/comments/",
+  EDIT_COMMENT: baseURL + "/comments/",
+  GET_COMMENTS: baseURL + "/comments/posts/",
 
-  UPLOAD: baseURL + '/cloudinary-upload',
+  GET_FRIENDS: baseURL + "/users/friends/",
+  GET_USER: baseURL + "/users/",
+  CHANGE_PASSWORD: baseURL + "/users/change-password/",
+  QUERY_USERS: baseURL + "/users/query/",
+  GET_ME: baseURL + "/users/me",
 
-  GET_CONVERSATIONS: baseURL + '/conversations/',
-  ADD_MEMBER: baseURL + '/conversations/members/',
+  UPLOAD: baseURL + "/cloudinary-upload",
 
-  GET_MESSAGES: baseURL + '/messages/',
+  GET_CONVERSATIONS: baseURL + "/conversations/",
+  ADD_MEMBER: baseURL + "/conversations/members/",
 
-  CREATE_MESSAGE: baseURL + '/messages/',
+  GET_MESSAGES: baseURL + "/messages/",
 
-  
+  CREATE_MESSAGE: baseURL + "/messages/",
 };
 export default api;
