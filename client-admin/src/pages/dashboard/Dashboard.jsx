@@ -1,16 +1,18 @@
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, Stack, Typography } from '@mui/material';
 import Layout from '../../components/Layout';
 import { useEffect, useState } from "react";
 import postApi from "../../api/postApi";
 import { Link } from 'react-router-dom'
-
+import SimpleBarChart from '../../components/chart/SimpleBarChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import StackedLineChartIcon from '@mui/icons-material/StackedLineChart';
 export default function Dashboard() {
     const [result, setResult] = useState({})
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
                 const res = await postApi.getDashboardAdmin();
-                console.log(res,'res dashboard')
+                console.log(res, 'res dashboard')
                 setResult(res)
             } catch (e) {
             }
@@ -22,6 +24,7 @@ export default function Dashboard() {
     }, [])
     return (
         <Layout>
+            <Chip icon={<StackedLineChartIcon />} label="Thống kê"  />
             <Stack
                 direction='row'
                 justifyContent='center'
@@ -156,7 +159,7 @@ export default function Dashboard() {
                                 <Typography gutterBottom variant='h5' component='div'>
                                     Số lượng tương tác
                                 </Typography>
-                                <Typography  variant='h4' color='text.primary' display={'flex'} justifyContent={'flex-end'}>
+                                <Typography variant='h4' color='text.primary' display={'flex'} justifyContent={'flex-end'}>
                                     {result.numComment}
                                 </Typography>
                             </CardContent>
@@ -169,7 +172,10 @@ export default function Dashboard() {
                     </Link>
                 </Card>
             </Stack>
-
+            <Chip icon={<BarChartIcon />} label="Biểu đồ" />
+            <Stack alignItems={'center'} marginTop={10}>
+                <SimpleBarChart dataChart={result} />
+            </Stack>
         </Layout>
     );
 }

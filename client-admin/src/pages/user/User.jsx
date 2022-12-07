@@ -81,7 +81,9 @@ export default function User() {
         setPage(0);
     };
     const handleBlock = async (userId) => {
+
         try {
+            
             let res = await userApi.blockUser({ userId });
             notify(res.message);
         } catch (error) {
@@ -185,7 +187,7 @@ export default function User() {
                     direction: order,
                     textSearch
                 });
-                console.log('postApi', res);
+                console.log('search',page, limit,textSearch);
                 setUsers(res.data.items);
                 setLength(res.data.totalItem);
             } catch (err) {
@@ -291,12 +293,12 @@ export default function User() {
                                             <TableCell align="right">{user.numFollowing}</TableCell>
                                             <TableCell align="right">{user.numFollowed}</TableCell>
                                             <TableCell
-                                                align="right">{(user.isBlock == false) ? 'Đang hoạt động' : 'Bị khóa'}</TableCell>
+                                                align="right">{(user.isBlock == false ||user.isBlock==null ) ? 'Đang hoạt động' : 'Bị khóa'}</TableCell>
                                             <TableCell
 
                                             >
                                                 <Stack direction="row" spacing={2}>
-                                                    {(user.isBlock == false) ?
+                                                    {(user.isBlock == false ||user.isBlock==null) ?
                                                         < Button color='error' variant="contained"
                                                             startIcon={<CloseIcon />} onClick={() =>
                                                                 handleBlock(user.id)

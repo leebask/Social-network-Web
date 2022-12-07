@@ -21,10 +21,11 @@ const postApi = {
     return response.data;
   },
   getPostAdmin: async (payload) => {
-    console.log(payload);
+    console.log(payload,'psst admin');
     const url = api.GET_POST_ADMIN;
     const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
-    const response = await axiosClient.get(url,{headers}, {params:payload});
+    const response = await axiosClient.get(url, {params:payload});
+    console.log(response,'response psst admin')
     return response;
   },
   getDashboardAdmin: async (payload) => {
@@ -36,8 +37,10 @@ const postApi = {
     return response.data;
   },
   blockPost: async (payload) => {
-    const url = api.BLOCK_POST;
-    const response =  axiosClient.patch(url, payload);
+    console.log(payload,'payload')
+    const url = api.BLOCK_POST+payload?.postId;
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}`};
+    const response =  axiosClient.put(url);
     return response;
   },
 };

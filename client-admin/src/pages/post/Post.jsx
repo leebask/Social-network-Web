@@ -1,4 +1,4 @@
-import {Button, Stack} from '@mui/material';
+import { Button, Input, InputAdornment, Stack } from '@mui/material';
 import Layout from '../../components/Layout';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -15,8 +15,8 @@ import BlockIcon from '@mui/icons-material/Block';
 import InfoIcon from '@mui/icons-material/Info';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import {visuallyHidden} from '@mui/utils';
-import {useEffect, useState} from "react";
+import { visuallyHidden } from '@mui/utils';
+import { useEffect, useState } from "react";
 import postApi from "../../api/postApi";
 import GENERAL_CONSTANTS from "../../GeneralConstants";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -24,9 +24,12 @@ import IconButton from "@mui/material/IconButton";
 import DialogContent from "@mui/material/DialogContent";
 import Typography from "@mui/material/Typography";
 import DialogActions from "@mui/material/DialogActions";
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
-import  { notify } from '../../utility/toast';
+import { notify } from '../../utility/toast';
+import { Export } from '../../components/export/Export';
+import SearchIcon from '@mui/icons-material/Search';
+
 export default function Post() {
 
     const [order, setOrder] = useState('desc');
@@ -47,12 +50,18 @@ export default function Post() {
                 const res = await postApi.getPostAdmin({
                     // page:page,
                     // sort: 'LIKE',
+
                     page,
                     limit,
                     sort: orderBy,
                     direction: order
                 });
-                console.log('postApi', res);
+                console.log('postApi', {
+                    page,
+                    limit,
+                    sort: orderBy,
+                    direction: order
+                });
                 setPosts(res.data.items);
                 setLength(res.data.totalItem);
             } catch (err) {
@@ -71,8 +80,26 @@ export default function Post() {
     };
     const handleBlock = async (postId) => {
         try {
-           let res = await postApi.blockPost({postId});
+            let res = await postApi.blockPost({ postId });
             notify(res.message);
+            const fetchPosts = async () => {
+                try {
+                    const res = await postApi.getPostAdmin({
+                        // page:page,
+                        // sort: 'LIKE',
+
+                        page,
+                        limit,
+                        sort: orderBy,
+                        direction: order
+                    });
+
+                    setPosts(res.data.items);
+                    setLength(res.data.totalItem);
+                } catch (err) {
+                }
+            }
+            fetchPosts();
         } catch (error) {
             console.log(error)
         }
@@ -90,7 +117,7 @@ export default function Post() {
             id: GENERAL_CONSTANTS.SORT.POSTID,
             numeric: false,
             disablePadding: false,
-            label: 'id',
+            label: 'ID',
         },
         {
             id: GENERAL_CONSTANTS.SORT.FULLNAME,
@@ -124,7 +151,7 @@ export default function Post() {
     ];
 
     function EnhancedTableHead(props) {
-        const {order, orderBy, rowCount, onRequestSort} =
+        const { order, orderBy, rowCount, onRequestSort } =
             props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
@@ -164,8 +191,8 @@ export default function Post() {
 
     // * state moi
 
-// * dialog
-    const BootstrapDialog = styled(Dialog)(({theme}) => ({
+    // * dialog
+    const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
             padding: theme.spacing(2),
         },
@@ -174,10 +201,10 @@ export default function Post() {
         },
     }));
     const BootstrapDialogTitle = (props) => {
-        const {children, onClose, ...other} = props;
+        const { children, onClose, ...other } = props;
 
         return (
-            <DialogTitle sx={{m: 0, p: 2}} {...other}>
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
                 {children}
                 {onClose ? (
                     <IconButton
@@ -190,7 +217,7 @@ export default function Post() {
                             color: (theme) => theme.palette.grey[500],
                         }}
                     >
-                        <CloseIcon/>
+                        <CloseIcon />
                     </IconButton>
                 ) : null}
             </DialogTitle>
@@ -202,15 +229,43 @@ export default function Post() {
     const handleClose = () => {
         setOpen(false);
     };
-
+    const [keySearch, setKeySearch] = useState('')
 
     return <Layout>
-        <Box sx={{width: '100%'}}>
-            <Paper sx={{width: '100%', mb: 2}}>
+        <Box sx={{ width: '100%' }}>
+            <Stack flexDirection={'row'} marginBottom={8} justifyContent={'right'} gap={2} width={'100%'}>
+                <Input
+                    value={keySearch}
+                    onChange={(e)=>setKeySearch(e.currentTarget.value)}
+                    placeholder='Tìm theo ID, Tên'
+                    id="input-with-icon-adornment"
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    }
+                />
+                <Export
+                    csvData={posts?.map((post) => (
+                        {
+                            ID: post?.id,
+                            'Người viết bài': post?.fullName,
+                            'Lượt like': post?.numLike,
+                            'Lượt bình luận': post?.numComment,
+                            'Lượt lượt báo cáo': post?.numReport,
+                            'Trạng thái': post?.isBlock ? 'Hoạt động' : "Không hoạt động",
+                            'Link ảnh': post?.img
+                        }
+                    ))}
+                    fileName={'post'}
+                />
+            </Stack>
+            <Paper sx={{ width: '100%', mb: 2 }}>
 
                 <TableContainer>
                     <Table
-                        sx={{minWidth: 750}}
+
+                        sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                     >
                         <EnhancedTableHead
@@ -222,7 +277,7 @@ export default function Post() {
                         <TableBody>
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-                            {posts
+                            {posts?.filter(k=>k?.fullName.toLowerCase()?.includes(keySearch.toLowerCase())||String(k.id)?.includes(keySearch))
                                 .map((post, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -251,19 +306,19 @@ export default function Post() {
                                                 <Stack direction="row" spacing={2}>
                                                     {(post.isBlock == false) ?
                                                         < Button color='error' variant="contained"
-                                                                 startIcon={<CloseIcon/>} onClick={() =>
-                                                            handleBlock(post.id)
-                                                        }>
+                                                            startIcon={<CloseIcon />} onClick={() =>
+                                                                handleBlock(post.id)
+                                                            }>
                                                             Chặn
                                                         </Button> :
                                                         < Button color='success' variant="contained"
-                                                                 startIcon={<CheckIcon/>} onClick={() =>
-                                                            handleBlock(post.id)
-                                                        }>
+                                                            startIcon={<CheckIcon />} onClick={() =>
+                                                                handleBlock(post.id)
+                                                            }>
                                                             Bỏ chặn
                                                         </Button>
                                                     }
-                                                    <Button variant="contained" endIcon={<InfoIcon/>} onClick={() =>
+                                                    <Button variant="contained" endIcon={<InfoIcon />} onClick={() =>
                                                         handleInfo(post)
                                                     }>
                                                         Xem chi tiết
@@ -280,7 +335,7 @@ export default function Post() {
                                         height: (dense ? 33 : 53) * emptyRows,
                                     }}
                                 >
-                                    <TableCell colSpan={6}/>
+                                    <TableCell colSpan={6} />
                                 </TableRow>
                             )}
                         </TableBody>
@@ -304,14 +359,14 @@ export default function Post() {
                     open={open}
                 >
                     <BootstrapDialogTitle id="customized-dialog-title"
-                                          onClose={handleClose}>
+                        onClose={handleClose}>
                         {post?.user?.fullName}
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
                         <Typography gutterBottom>
                             {post?.description}
                         </Typography>
-                        <Box
+                        {post?.img && <Box
                             component="img"
                             sx={{
                                 // height: 300,
@@ -320,8 +375,8 @@ export default function Post() {
                                 // maxWidth: {xs: 350, md: 250},
                             }}
                             alt="The house from the offer."
-                            src={ post?.img}
-                        />
+                            src={post?.img}
+                        />}
 
                     </DialogContent>
 
