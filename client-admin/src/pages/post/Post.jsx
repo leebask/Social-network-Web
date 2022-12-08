@@ -1,4 +1,4 @@
-import { Button, Input, InputAdornment, Stack } from '@mui/material';
+import { Button, Chip, Input, InputAdornment, Stack } from '@mui/material';
 import Layout from '../../components/Layout';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -29,6 +29,8 @@ import Dialog from "@mui/material/Dialog";
 import { notify } from '../../utility/toast';
 import { Export } from '../../components/export/Export';
 import SearchIcon from '@mui/icons-material/Search';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import moment from 'moment';
 
 export default function Post() {
 
@@ -148,6 +150,12 @@ export default function Post() {
             disablePadding: false,
             label: 'Trạng thái',
         }
+        , {
+            id: GENERAL_CONSTANTS.SORT.POSTID,
+            numeric: true,
+            disablePadding: false,
+            label: 'Thời gian',
+        }
     ];
 
     function EnhancedTableHead(props) {
@@ -236,7 +244,7 @@ export default function Post() {
             <Stack flexDirection={'row'} marginBottom={8} justifyContent={'right'} gap={2} width={'100%'}>
                 <Input
                     value={keySearch}
-                    onChange={(e)=>setKeySearch(e.currentTarget.value)}
+                    onChange={(e) => setKeySearch(e.currentTarget.value)}
                     placeholder='Tìm theo ID, Tên'
                     id="input-with-icon-adornment"
                     startAdornment={
@@ -253,18 +261,21 @@ export default function Post() {
                             'Lượt like': post?.numLike,
                             'Lượt bình luận': post?.numComment,
                             'Lượt lượt báo cáo': post?.numReport,
-                            'Trạng thái': post?.isBlock ? 'Hoạt động' : "Không hoạt động",
+                            'Trạng thái': !post?.isBlock ? 'Hoạt động' : "Không hoạt động",
                             'Link ảnh': post?.img
                         }
                     ))}
                     fileName={'post'}
                 />
             </Stack>
-            <Paper sx={{ width: '100%', mb: 2 }}>
 
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <Chip
+                    icon={<DynamicFeedIcon />}
+                    label="Tổng bài viết"
+                />
                 <TableContainer>
                     <Table
-
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                     >
@@ -277,7 +288,7 @@ export default function Post() {
                         <TableBody>
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-                            {posts?.filter(k=>k?.fullName.toLowerCase()?.includes(keySearch.toLowerCase())||String(k.id)?.includes(keySearch))
+                            {posts?.filter(k => k?.fullName.toLowerCase()?.includes(keySearch.toLowerCase()) || String(k.id)?.includes(keySearch))
                                 .map((post, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -300,6 +311,7 @@ export default function Post() {
                                             <TableCell align="right">{post.numReport}</TableCell>
                                             <TableCell
                                                 align="right">{(post.isBlock == false) ? 'Đang hoạt động' : 'Bị khóa'}</TableCell>
+                                                <TableCell align="right">{moment(post?.createdAt).format('DD/MM/YYYY HH:mm:ss')}</TableCell>
                                             <TableCell
 
                                             >
@@ -309,13 +321,13 @@ export default function Post() {
                                                             startIcon={<CloseIcon />} onClick={() =>
                                                                 handleBlock(post.id)
                                                             }>
-                                                            Chặn
+                                                            Khóa bài
                                                         </Button> :
                                                         < Button color='success' variant="contained"
                                                             startIcon={<CheckIcon />} onClick={() =>
                                                                 handleBlock(post.id)
                                                             }>
-                                                            Bỏ chặn
+                                                            Bỏ Khóa 
                                                         </Button>
                                                     }
                                                     <Button variant="contained" endIcon={<InfoIcon />} onClick={() =>
@@ -363,7 +375,10 @@ export default function Post() {
                         {post?.user?.fullName}
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
-                        <Typography gutterBottom>
+                        <Typography>
+                            Lúc: {moment(post?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                        </Typography>
+                        <Typography gutterBottom  variant="h6" component="h2">
                             {post?.description}
                         </Typography>
                         {post?.img && <Box

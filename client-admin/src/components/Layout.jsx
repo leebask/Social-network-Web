@@ -23,11 +23,16 @@ import { ExitToApp } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
 import userSlice from '../redux/slices/userSlice';
 const drawerWidth = 240;
+var URL =()=> window.location.href;
+
 function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [logout2, setLogout] = React.useState(false);
   const dispatch = useDispatch()
+  // var URL = window.location.href;
+  console.log(URL().split('/')[URL().split('/').length-1])
+
   const logout = () => {
    dispatch(userSlice.actions.logout());
 
@@ -35,26 +40,30 @@ function ResponsiveDrawer(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        <ListItem disablePadding>
-          <Link
+        <ListItem disablePadding
+        style={{backgroundColor: URL().split('/')[URL().split('/').length-1]== 'dashboard'? '#00000019':'none' }}
+        >
+          <Link 
             to={`/admin/dashboard`}
-            style={{ textDecoration: 'none', color: 'black' }}
+            style={{ textDecoration: 'none', color: 'black'}}
+            
           >
             <ListItemButton>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={'Dashboard'} />
+              <ListItemText  primary={'Dashboard'} />
             </ListItemButton>
           </Link>
         </ListItem>
-        <ListItem disablePadding>
+        <ListItem disablePadding 
+        style={{backgroundColor: URL().split('/')[URL().split('/').length-1]== 'users'? '#00000019':'none' }}
+        >
           <Link
             to={`/admin/users`}
             style={{ textDecoration: 'none', color: 'black' }}
@@ -67,7 +76,9 @@ function ResponsiveDrawer(props) {
             </ListItemButton>
           </Link>
         </ListItem>
-        <ListItem disablePadding>
+        <ListItem disablePadding
+        style={{backgroundColor: URL().split('/')[URL().split('/').length-1]== 'posts'? '#00000019':'none' }}
+        >
           <Link
             to={`/admin/posts`}
             style={{ textDecoration: 'none', color: 'black' }}
@@ -80,7 +91,8 @@ function ResponsiveDrawer(props) {
             </ListItemButton>
           </Link>
         </ListItem>
-        <ListItem disablePadding onClick={logout}>
+        <ListItem disablePadding onClick={logout}
+        >
           <Link
             to={`/`}
             style={{ textDecoration: 'none', color: 'black' }}

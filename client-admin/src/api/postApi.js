@@ -32,7 +32,7 @@ const postApi = {
     console.log(payload,'payload admin dashboard');
     const url = api.GET_DASHBOARD_ADMIN;
     const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
-    const response = await axiosClient.get(url,{headers});
+    const response = await axiosClient.get(url);
     console.log(response,'response admin dashboard')
     return response.data;
   },

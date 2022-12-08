@@ -22,7 +22,7 @@ const api = {
 
   GET_USER_ADMIN: baseURL + '/admin/users',
 
-  BLOCK_USER: baseURL + '/admin/block-user',
+  BLOCK_USER: baseURL + '/admin/block-user/',
   BLOCK_POST: baseURL + '/admin/block-posts/'
 
 

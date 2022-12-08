@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, Stack, TextField } from '@mui/material';
+import { Avatar, Button, Chip, Divider, Grid, Stack, TextField, Tooltip } from '@mui/material';
 import Layout from '../../components/Layout';
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -30,6 +30,10 @@ import userApi from "../../api/userApi";
 import generalConstants from "../../GeneralConstants";
 import SearchIcon from '@mui/icons-material/Search';
 import { notify } from '../../utility/toast';
+import moment from 'moment';
+import GroupIcon from '@mui/icons-material/Group';
+import { Export } from '../../components/export/Export';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 export default function User() {
 
@@ -45,6 +49,7 @@ export default function User() {
     const [length, setLength] = useState(0)
     const [user, setUser] = useState({})
     const [textSearch, setTextSearch] = useState('');
+    const [userOnMonth, setUserOnMonth] = useState([])
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -66,6 +71,29 @@ export default function User() {
             console.log("Component Will Unmount")
         };
     }, [page, limit, order, orderBy]);
+    useEffect(() => {
+        if (length > 0) {
+            const fetchUsers = async () => {
+                try {
+                    const res = await userApi.getUserAdmin({
+                        page: 0,
+                        limit: 1000,
+                    });
+                    setUserOnMonth(res.data.items?.filter(
+                        k =>
+                            (moment(k.createdAt).format('M') == moment().format('M'))
+                            &&
+                            (moment(k.createdAt).format('YYYY') == moment().format('YYYY'))
+                    ));
+                } catch (err) {
+                }
+            }
+            fetchUsers();
+            return function cleanup() {
+                console.log("Component Will Unmount")
+            };
+        }
+    }, [length]);
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -83,7 +111,7 @@ export default function User() {
     const handleBlock = async (userId) => {
 
         try {
-            
+
             let res = await userApi.blockUser({ userId });
             notify(res.message);
         } catch (error) {
@@ -187,7 +215,7 @@ export default function User() {
                     direction: order,
                     textSearch
                 });
-                console.log('search',page, limit,textSearch);
+                console.log('search', page, limit, textSearch);
                 setUsers(res.data.items);
                 setLength(res.data.totalItem);
             } catch (err) {
@@ -240,10 +268,10 @@ export default function User() {
     return <Layout>
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <Stack flexDirection={'row'} marginBottom={8} justifyContent={'flex-end'} gap={2}>
+                <Stack flexDirection={'row'} marginBottom={4} justifyContent={'flex-end'} gap={2}>
                     <TextField
                         id="standard-search"
-                        label="Tìm ID, họ tên, tên người dùng"
+                        label="Tìm theo username,tên"
                         type="search"
                         variant="standard"
                         value={textSearch}
@@ -255,7 +283,28 @@ export default function User() {
                         }>
                         Tìm kiếm
                     </Button>
+                    <Export
+                        csvData={users?.map((user) => (
+                            {
+                                ID: user?.id,
+                                'Họ tên': user?.fullName,
+                                'Bài viết': user?.numPost,
+                                'Lượt báo cáo': user?.numIsReported,
+                                'Đang theo dõi': user?.numFollowing,
+                                'Được theo dõi': user?.numFollowed,
+                                'Avatar': user?.profilePicture,
+                                'Username': user?.username,
+                                'Ngày tạo': user?.createdAt,
+                                'Trạng thái': !user?.isBlock ? 'Hoạt động' : "Không hoạt động",
+                            }
+                        ))}
+                        fileName={'UsersExport'}
+                    />
                 </Stack>
+                <Chip
+                    icon={<GroupIcon />}
+                    label="Tổng User"
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -288,17 +337,17 @@ export default function User() {
                                                 {user.id}
                                             </TableCell>
                                             <TableCell>{user.fullName}</TableCell>
-                                            <TableCell align="right">{user.numPost}</TableCell>
-                                            <TableCell align="right">{user.numIsReported}</TableCell>
-                                            <TableCell align="right">{user.numFollowing}</TableCell>
-                                            <TableCell align="right">{user.numFollowed}</TableCell>
+                                            <TableCell align="center">{user.numPost}</TableCell>
+                                            <TableCell align="center">{user.numIsReported}</TableCell>
+                                            <TableCell align="center">{user.numFollowing}</TableCell>
+                                            <TableCell align="center">{user.numFollowed}</TableCell>
                                             <TableCell
-                                                align="right">{(user.isBlock == false ||user.isBlock==null ) ? 'Đang hoạt động' : 'Bị khóa'}</TableCell>
+                                                align="center">{(user.isBlock == false || user.isBlock == null) ? 'Đang hoạt động' : 'Bị khóa'}</TableCell>
                                             <TableCell
 
                                             >
                                                 <Stack direction="row" spacing={2}>
-                                                    {(user.isBlock == false ||user.isBlock==null) ?
+                                                    {(user.isBlock == false || user.isBlock == null) ?
                                                         < Button color='error' variant="contained"
                                                             startIcon={<CloseIcon />} onClick={() =>
                                                                 handleBlock(user.id)
@@ -345,6 +394,36 @@ export default function User() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+
+            <Chip
+                icon={<GroupAddIcon />}
+                label={'User mới trong tháng:' + ' ' + moment().format('M')}
+            />
+            <Stack
+                marginTop={2}
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                // spacing={2}
+                flexWrap={'wrap'}
+            >
+                {
+                    userOnMonth?.map(k =>
+                        <><Tooltip title={k.fullName} placement="bottom">
+                            <Stack alignItems={'center'} width={'120px'} paddingBottom={2} style={{cursor:'pointer'}}
+                                onClick={() =>
+                                    handleInfo(k)
+                                }>
+
+                                <Avatar alt={k.username} src={k?.profilePicture} />
+                                <div>{k.username}</div>
+
+                            </Stack>
+                        </Tooltip>
+                        </>
+                    )
+                }
+
+            </Stack>
             <div>
 
                 <BootstrapDialog
@@ -368,22 +447,28 @@ export default function User() {
 
                         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6}>
-                                Email
+                                Email:
                             </Grid>
                             <Grid item xs={6}>
                                 {user?.email}
                             </Grid>
                             <Grid item xs={6}>
-                                username
+                                Username:
                             </Grid>
                             <Grid item xs={6}>
                                 {user?.username}
                             </Grid>
                             <Grid item xs={6}>
-                                City
+                                City:
                             </Grid>
                             <Grid item xs={6}>
                                 {user?.address}
+                            </Grid>
+                            <Grid item xs={6}>
+                                Ngày tạo:
+                            </Grid>
+                            <Grid item xs={6}>
+                                {moment(user?.createdAt).format('DD/MM/YYYY')}
                             </Grid>
 
                         </Grid>

@@ -25,13 +25,12 @@ const userApi = {
   getUserAdmin: async (payload) => {
     const url =api.GET_USER_ADMIN;
     const headers = { Authorization: `Bearer ${localStorage.getItem("token")}`};
-    const response =await axiosClient.get(url,{headers}, {params:payload});
+    const response =await axiosClient.get(url, {params:payload});
     return response;
   },
   blockUser: async (payload) => {
-    const url =api.BLOCK_USER;
-    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
-    const response =  axiosClient.put(url,payload, {headers});
+    const url =api.BLOCK_USER+payload?.userId;
+    const response =  axiosClient.put(url);
     return response;
   },
 };
