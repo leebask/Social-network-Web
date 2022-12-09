@@ -1,9 +1,9 @@
 .post {
-  width: 100%;
+  width: 98%;
   border-radius: 10px;
   -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
-  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
-  margin: 30px 0;
+  box-shadow: 0px 0px 20px -8px rgba(0, 0, 0, 0.68);
+  margin: 30px auto;
 }
 
 .postWrapper {
@@ -14,7 +14,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
 }
 
 .postTopLeft {
@@ -80,22 +79,37 @@
 }
 .postTopRight {
   display: none;
-  
 }
 .postWrapper:hover .postTopRight {
-  display: flex;
- 
+  display: block;
 }
-.editButton, .removeButton{
+.editButton,
+.removeButton {
   cursor: pointer;
   align-self: end;
- 
 }
-.optionButton{
+.optionButton {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.reportButton{
-  margin-top: 30px;
-    margin-bottom: 10px;
-    margin-right: 20px;
+.reportButton {
+  margin-top: 2px;
+  /* margin-bottom: 10px;*/
+  margin-right: 20px;
+}
+
+.rightFollowButton {
+  /* margin-top: 30px; */
+  /* margin-bottom: 10px; */
+  border: none;
+  background-color: #1872f2;
+  color: white;
+  border-radius: 5px;
+  /* padding: 5px 10px; */
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }

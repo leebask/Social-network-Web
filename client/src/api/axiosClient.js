@@ -33,19 +33,18 @@ axiosClient.interceptors.response.use(
   },
   (error) => {
     const { response } = error;
-    console.log(error.response);
-    if (!response) {
-      notify("Server đã xảy ra sự cố, vui lòng báo admin");
-      throw error;
-    }
-    const { status } = response;
-    if (!status) notify("Server đã xảy ra sự cố, vui lòng báo admin");
-    if (status === 401) {
-      notify(response.data.message);
-    }
-    if (status === 400) {
-      notify(response.data.message);
-    }
+    // if (!response) {
+    //   notify("Server đã xảy ra sự cố, vui lòng báo admin");
+    //   throw error;
+    // }
+    // const { status } = response;
+    // if (!status) notify("Server đã xảy ra sự cố, vui lòng báo admin");
+    // if (status === 401) {
+    //   notify(response.data.message);
+    // }
+    // if (status === 400) {
+    //   notify(response.data.message);
+    // }
 
     throw error;
   }

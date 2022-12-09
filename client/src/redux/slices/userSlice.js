@@ -43,9 +43,7 @@ export const signInGoogle = createAsyncThunk(
 export const getFriends = createAsyncThunk(
   "user/getFriends",
   async (params, thunkAPI) => {
-    console.log(params);
     const response = await userApi.getFriends(params);
-    console.log(response);
     return response.data;
   }
 );
@@ -89,15 +87,16 @@ const userSlice = createSlice({
         ...action.payload,
       };
     },
-    logout: (state) => {},
+    logout: (navigate) => {
+      localStorage.removeItem("token");
+      // navigate();
+    },
     follow: (state, action) => {
       const newFriends = action.payload;
       state.friends.push(newFriends);
     },
     unfollow: (state, action) => {
-      state.friends = state.friends.filter(
-        (f) => f.followedId !== action.payload
-      );
+      state.friends = state.friends.filter((f) => f.id !== action.payload);
     },
   },
   extraReducers: {
@@ -135,7 +134,6 @@ const userSlice = createSlice({
       // state.isFetching = false;
     },
     [getFriends.fulfilled]: (state, action) => {
-      console.log({ action });
       state.friends = action.payload;
       // state.isFetching = false;
     },
