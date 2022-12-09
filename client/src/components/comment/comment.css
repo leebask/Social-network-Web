@@ -31,7 +31,8 @@
 .commentImg,
 .commentOwner,
 .seeMoreComment,
-.commentOwnerImg,.commentOption {
+.commentOwnerImg,
+.commentOption {
   cursor: pointer;
 }
 .showMoreBtn:hover,
@@ -46,19 +47,24 @@
 .commentHr {
   margin: 10px 0;
 }
-.commentWrapper{
+.commentWrapper {
   padding: 15px;
 }
-.commentOption{
+.commentOption {
   display: none;
 }
-.commentCenterBottomRight{
+.commentCenterBottomRight {
   display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  overflow: hidden;
 }
-.commentCenterBottomRight:hover .commentOption{
+
+.commentCenterBottomRight:hover .commentOption {
   display: flex;
   margin-left: 30px;
 }
 
-
-
+.editButton {
+  margin-right: 10px;
+}
