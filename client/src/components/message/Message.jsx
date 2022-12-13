@@ -4,13 +4,14 @@ import userApi from "../../api/userApi";
 import { Avatar, Tooltip } from "@material-ui/core";
 const _ = require("lodash");
 export default function Message({ message, own }) {
+  // console.log(message);
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        <Tooltip title={message?.User?.fullName}>
+        <Tooltip title={message?.user?.fullName}>
           <Avatar
             className="messageImg"
-            src={message?.User?.img || message.profilePicture}
+            src={message?.user?.profilePicture || message.profilePicture}
             alt=""
           />
         </Tooltip>

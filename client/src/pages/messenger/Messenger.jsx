@@ -53,32 +53,34 @@ export default function Messenger() {
   const [isEdited, setIsEdited] = useState(false);
   const location = useLocation();
 
-  // useEffect(() => {
-  //   const createConver = async () => {
-  //     try {
-  //       const res = await conversationApi.newConversation({
-  //         title: location?.state?.user?.fullName,
-  //         users: [location?.state?.user?.id],
-  //       });
-  //       console.log(res);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   createConver();
-  // }, [location?.state?.user]);
+  useEffect(() => {
+    // if (conversations.some((item) => item)) {
+    //   const createConver = async () => {
+    //     try {
+    //       const res = await conversationApi.newConversation({
+    //         title: location?.state?.user?.fullName,
+    //         users: [location?.state?.user?.id],
+    //       });
+    //       console.log(res);
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   };
+    //   createConver();
+    // }
+  }, [location?.state?.user, conversations]);
 
   const sendMessage = async (messageObject) => {
     try {
       console.log(messageObject);
-      let urlImg;
+      let urlImg = "";
       if (messageObject.file) {
         const uploadData = new FormData();
         uploadData.append("file", messageObject.file, "file");
         const resImg = await commonApi.cloudinaryUpload(uploadData);
         urlImg = resImg.data.secure_url;
       }
-      if (!messageObject.text) {
+      if (messageObject.text === "" && urlImg === "") {
         return;
       }
       // resImg.data.secure_url
@@ -109,7 +111,7 @@ export default function Messenger() {
       const message = await conversationApi.newMessage({
         conversationId: currentChat.id,
         text: messageObject.text,
-        fileUrl: urlImg || "",
+        fileUrl: urlImg,
       });
       setMessages((m) => [...m, message]);
     } catch (error) {
@@ -158,7 +160,7 @@ export default function Messenger() {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await conversationApi.getOfUser();
+        const res = await conversationApi.getOfUser({ params: { limit: 10 } });
         console.log(res);
         if (res.data === null) {
           setConversations([]);
@@ -230,21 +232,30 @@ export default function Messenger() {
   };
 
   const handleSubmit = async () => {
-    // setIsAdd(false);
+    setIsAdd(false);
     try {
       if (!currentChat) {
-        console.log(value);
-        // let memberIds = value.map((member) => member.followedId);
-        // let res = await conversationApi.newConversation({ users: memberIds });
+        let memberIds = value.map((member) => member.id);
+        let res = await conversationApi.newConversation({
+          users: memberIds,
+          title: [...value, user].map((m) => m.fullName).join(", "),
+        });
+        // console.log(res);
         // notify(res.message);
-        // setConversations((pre) => [, ...pre, res.data]);
-        // setCurrentChat(res.data);
+        setConversations((pre) => {
+          if (pre.some((item) => item.id === res.data.id)) {
+            const newConver = pre.filter((item) => item.id !== res.data.id);
+            return [res.data, ...newConver];
+          }
+          return [res.data, ...pre];
+        });
+        setCurrentChat(res.data);
       } else {
-        // let memberIds = value.map((member) => member.followedId);
-        // let res = await conversationApi.addMember(currentChat.conversationId, {
-        //   users: memberIds,
-        // });
-        // notify(res.message);
+        let memberIds = value.map((member) => member.followedId);
+        let res = await conversationApi.addMember(currentChat.conversationId, {
+          users: memberIds,
+        });
+        notify(res.message);
       }
     } catch (error) {}
   };
@@ -341,12 +352,12 @@ export default function Messenger() {
                 onChange={(e) => setTextSearch(e.target.value)}
               />
               <Button
-                // size="small"
+                size="small"
                 variant="contained"
                 color="primary"
                 startIcon={<Add />}
                 onClick={handleAdd}
-                className={"btn-add"}
+                // className={"btn-add"}
               >
                 Thêm cuộc trò chuyện
               </Button>
@@ -480,7 +491,7 @@ export default function Messenger() {
                 )}
 
                 <div className="chatBoxTop">
-                  <button onClick={handleShowMore}>Load thêm tin nhắn</button>
+                  {/* <button onClick={handleShowMore}>Load thêm tin nhắn</button> */}
                   {messages.map((m) => (
                     <div key={m.id} ref={scrollRef}>
                       <Message message={m} own={m.user.id === user.id} />
