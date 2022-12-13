@@ -114,6 +114,27 @@ export default function User() {
 
             let res = await userApi.blockUser({ userId });
             notify(res.message);
+            console.log(res);
+            if(res.status ==='SUCCESS') {
+                const fetchUsers = async () => {
+                    try {
+                        const res = await userApi.getUserAdmin({
+                            page,
+                            limit,
+                            sort: orderBy,
+                            direction: order
+                        });
+                        console.log('postApi', res);
+                        setUsers(res.data.items);
+                        setLength(res.data.totalItem);
+                    } catch (err) {
+                    }
+                }
+                fetchUsers();
+                return function cleanup() {
+                    console.log("Component Will Unmount")
+                };
+            }
         } catch (error) {
             console.log(error)
         }
