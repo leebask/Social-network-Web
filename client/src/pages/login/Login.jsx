@@ -71,6 +71,13 @@ export default function Login() {
                 <p>Quên mật khẩu</p>
               </div>
             </Link>
+            <Link
+              to={"/register"}
+              style={{ textDecoration: "none" }}
+              className="loginRegisterButton"
+            >
+              <button className="loginRegisterbtn">Create a New Account</button>
+            </Link>
           </form>
           {/* <button
             className="loginButtonGoogle"
@@ -83,13 +90,6 @@ export default function Login() {
               "Log In By Google"
             )}
           </button> */}
-          <Link
-            to={"/register"}
-            style={{ textDecoration: "none" }}
-            className="loginRegisterButton"
-          >
-            <button className="loginRegisterbtn">Create a New Account</button>
-          </Link>
         </div>
       </div>
     </div>

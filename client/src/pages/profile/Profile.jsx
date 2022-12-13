@@ -45,8 +45,15 @@ export default function Profile() {
   const handleUploadProfilePicture = async () => {
     try {
       let obj = {};
-      if (isCover && urlFile !== "") obj.coverPicture = urlFile;
-      else if (urlFile !== "") obj.profilePicture = urlFile;
+      const uploadData = new FormData();
+      uploadData.append("file", file, "file");
+      let resImg = await commonApi.cloudinaryUpload(uploadData);
+      // setUrlFile(res.data.secure_url);
+
+      if (isCover && resImg.data.secure_url !== "")
+        obj.coverPicture = resImg.data.secure_url;
+      else if (resImg.data.secure_url !== "")
+        obj.profilePicture = resImg.data.secure_url;
       let res = await userApi.updateUser(obj);
 
       dispatch(userSlice.actions.updateUser(obj));

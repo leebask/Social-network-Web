@@ -4,7 +4,15 @@ import "./online.css";
 
 export default function Online({ user }) {
   return (
-    <Link to="/messenger" style={{ textDecoration: "none" }}>
+    <Link
+      to={{
+        pathname: "/messenger",
+        search: "",
+        hash: "",
+        state: { user },
+      }}
+      style={{ textDecoration: "none" }}
+    >
       <li className="rightbarFriend">
         <div className="rightbarProfileImgContainer">
           <Avatar
