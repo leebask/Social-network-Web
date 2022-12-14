@@ -2,10 +2,10 @@ import axios from "axios";
 import { useRef } from "react";
 import "./register.css";
 import { useHistory } from "react-router";
-import { Link } from 'react-router-dom';
-import userApi from '../../api/userApi';
-import { ToastContainer } from 'react-toastify';
-import { notify } from '../../utility/toast';
+import { Link } from "react-router-dom";
+import userApi from "../../api/userApi";
+import { ToastContainer } from "react-toastify";
+import { notify } from "../../utility/toast";
 
 export default function Register() {
   const username = useRef();
@@ -29,17 +29,17 @@ export default function Register() {
       };
       try {
         const res = await userApi.register(user);
-        notify(res.message);
+        notify(res);
         history.push("/login");
       } catch (err) {
-        console.log(err);
+        // console.log(err.response.data);
+        notify(err.response.data.message);
       }
     }
   };
 
   return (
     <div className="login">
-
       <div className="loginWrapper">
         <div className="loginLeft">
           <h3 className="loginLogo">Social Media</h3>
@@ -86,10 +86,7 @@ export default function Register() {
             <button className="loginButton" type="submit">
               Sign Up
             </button>
-            <Link
-              to={"/login"}
-              style={{ textDecoration: "none" }}
-            >
+            <Link to={"/login"} style={{ textDecoration: "none" }}>
               <button className="loginRegisterbtn">Log into Account</button>
             </Link>
             <ToastContainer />

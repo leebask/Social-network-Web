@@ -13,6 +13,10 @@
   border: none;
   border-bottom: 1px solid gray;
 }
+.btn-add {
+  font-size: 10px !important;
+  padding: 5px 2px !important;
+}
 
 .chatBox {
   flex: 5.5;
@@ -34,7 +38,7 @@
 .chatOnline {
   flex: 3;
 }
-.chatMenuWrapper{
+.chatMenuWrapper {
   height: calc(100vh - 70px);
   overflow-y: scroll;
   position: sticky;
@@ -45,7 +49,6 @@
 .chatOnlineWrapper {
   padding: 10px;
   height: 100%;
- 
 }
 
 .noConversationText {
@@ -65,23 +68,21 @@
     display: none;
   }
 
-  .chatBox{
+  .chatBox {
     flex: 10;
   }
 
-  .chatOnline{
+  .chatOnline {
     flex: 1px;
   }
 }
-.topChatMenu{
+.topChatMenu {
   display: flex;
-  
 }
-.chatTitle{
+.chatTitle {
   display: flex;
-  
 }
-.chatTitleRight{
+.chatTitleRight {
   display: flex;
   position: absolute;
   right: 0;

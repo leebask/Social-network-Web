@@ -39,6 +39,7 @@ export default function Rightbar({ user }) {
     const getFriends = async () => {
       try {
         const res = await userApi.getFriends(user.username);
+        // console.log(res.data);
         setFriends(res.data);
       } catch (err) {}
     };
@@ -89,8 +90,8 @@ export default function Rightbar({ user }) {
             <span className="rightbarInfoValue">{user?.description}</span>
           </div>
           <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">City:</span>
-            <span className="rightbarInfoValue">{user?.city}</span>
+            <span className="rightbarInfoKey">Address:</span>
+            <span className="rightbarInfoValue">{user?.address}</span>
           </div>
           {/* <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">From:</span>

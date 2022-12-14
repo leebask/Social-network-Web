@@ -1,6 +1,7 @@
 .form {
   display: flex;
-  border-top: 2px solid #D3D3D3;
+  border-top: 2px solid #d3d3d3;
+  /* height: 100px; */
 }
 
 .input {
@@ -19,7 +20,9 @@
   font-size: 1.2em;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
 }
 
@@ -56,9 +59,9 @@ input:focus, textarea:focus, select:focus {
 }
 
 .uploadImage {
-  width: 40px;
+  width: 20px;
 }
-.shareImgMessage{
+.shareImgMessage {
   height: 10vh;
   object-fit: cover;
 }

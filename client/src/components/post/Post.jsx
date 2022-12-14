@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import { forwardRef } from "react";
 import { Avatar } from "@mui/material";
 import { format } from "timeago.js";
+import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 const Post = forwardRef(({ post, posts, setPosts }, ref) => {
   const dispatch = useDispatch();
@@ -39,13 +41,15 @@ const Post = forwardRef(({ post, posts, setPosts }, ref) => {
     setEditText(post?.description);
     setFollowed(friends.map((item) => item.id).includes(post?.userId));
     setLike(post?.numLike);
+    setIsLiked(post.likes.some((item) => item === user.id));
+    setEditText(post?.description);
   }, [post, friends]);
 
   useEffect(() => {
     const getComments = async () => {
       try {
         const res = await postApi.getComments({
-          postId: currentPost,
+          postId: data?.id,
           params: {
             page,
             limit: 5,
@@ -55,21 +59,21 @@ const Post = forwardRef(({ post, posts, setPosts }, ref) => {
         setLength(res.length);
       } catch (err) {}
     };
-    if (isComment) getComments();
-  }, [currentPost, page]);
+    getComments();
+  }, [data, page]);
 
-  useEffect(() => {
-    try {
-      const fetchLike = async () => {
-        let res = await postApi.getLikePost(data?.id);
-        console.log(res);
-        let usersLikeId = res.data.map((f) => f.UserId);
-        let check = usersLikeId.includes(user?.id);
-        setIsLiked(check);
-      };
-      fetchLike();
-    } catch (error) {}
-  }, [user?.id, data?.id]);
+  // useEffect(() => {
+  //   try {
+  //     const fetchLike = async () => {
+  //       let res = await postApi.getLikePost(data?.id);
+  //       console.log(res);
+  //       let usersLikeId = res.data.map((f) => f.UserId);
+  //       let check = usersLikeId.includes(user?.id);
+  //       setIsLiked(check);
+  //     };
+  //     fetchLike();
+  //   } catch (error) {}
+  // }, [user?.id, data?.id]);
 
   const likeHandler = async () => {
     try {
@@ -113,7 +117,7 @@ const Post = forwardRef(({ post, posts, setPosts }, ref) => {
   const editPost = async (postId, editText) => {
     try {
       await postApi.editPost(postId, { description: editText });
-
+      setEditText(editText);
       setIsShow(false);
     } catch (err) {}
   };
@@ -203,13 +207,25 @@ const Post = forwardRef(({ post, posts, setPosts }, ref) => {
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
-            <img
+            {/* <img
               className="likeIcon"
               src="https://res.cloudinary.com/dzens2tsj/image/upload/v1660559011/like_jbx2ph.png"
               onClick={likeHandler}
               alt=""
-            />
-
+            /> */}
+            {isLiked ? (
+              <ThumbUpIcon
+                onClick={likeHandler}
+                color="info"
+                style={{ marginRight: "10px", cursor: "pointer" }}
+              />
+            ) : (
+              <ThumbUpOffAltOutlinedIcon
+                color="info"
+                style={{ marginRight: "10px", cursor: "pointer" }}
+                onClick={likeHandler}
+              />
+            )}
             <span className="postLikeCounter">{like} people like it</span>
           </div>
           <div className="postBottomRight">
